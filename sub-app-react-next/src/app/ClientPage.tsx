@@ -55,7 +55,7 @@ function trySetupWujieBus() {
 }
 trySetupWujieBus()
 
-export default function Home() {
+export default function ClientPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMsg, setInputMsg] = useState('')
   const [parentMessages, setParentMessages] = useState<string[]>([])
@@ -111,19 +111,7 @@ export default function Home() {
   }
 
   return (
-    <div style={{ padding: '24px', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ marginBottom: '16px', padding: '12px', borderRadius: '8px', background: 'linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)', border: '1px solid #e2e8f0' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-            <h1 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>React Next.js 子应用</h1>
-            <p style={{ fontSize: '12px', color: '#666', margin: '4px 0 0 0' }}>技术栈: Next.js 15 + React 19</p>
-          </div>
-          <div style={{ fontSize: '11px', color: '#3b82f6', background: '#eff6ff', padding: '4px 10px', borderRadius: '12px', border: '1px solid #bfdbfe' }}>
-            🌐 //localhost:9001
-          </div>
-        </div>
-      </div>
-
+    <>
       {parentMessages.length > 0 && (
         <div style={{ marginBottom: '16px', border: '2px solid #3b82f6', borderRadius: '8px', background: '#eff6ff', padding: '12px' }}>
           <div style={{ fontSize: '13px', fontWeight: 600, color: '#1d4ed8', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -191,6 +179,6 @@ export default function Home() {
         ))}
         {messages.length === 0 && <p style={{ fontSize: '12px', color: '#999' }}>暂无消息</p>}
       </div>
-    </div>
+    </>
   )
 }
