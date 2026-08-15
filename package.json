@@ -1,0 +1,15 @@
+{
+  "name": "mfe-wujie-demo",
+  "private": true,
+  "scripts": {
+    "dev:main": "pnpm --filter main-app dev",
+    "dev:next": "pnpm --filter sub-app-react-next dev",
+    "dev:vue3": "pnpm --filter sub-app-vue3 dev",
+    "dev:spa": "pnpm --filter sub-app-react-spa dev",
+    "dev": "pnpm run /^dev:/",
+    "build:main": "pnpm --filter main-app build",
+    "build:vue3": "pnpm --filter sub-app-vue3 build",
+    "build:spa": "pnpm --filter sub-app-react-spa build",
+    "build": "pnpm run /^build:/"
+  }
+}

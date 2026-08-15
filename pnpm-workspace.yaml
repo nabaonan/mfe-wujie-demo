@@ -1,0 +1,5 @@
+packages:
+  - 'main-app'
+  - 'sub-app-react-next'
+  - 'sub-app-vue3'
+  - 'sub-app-react-spa'
