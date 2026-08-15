@@ -88,10 +88,18 @@ const handleMessage = (e: MessageEvent) => {
     if (bus) bus.$emit('sub-to-sub', { target: targetName, from: e.data.from, content: e.data.content })
     const iframe = document.querySelector(`iframe[name="${targetName}"]`)
     if (iframe?.contentWindow) {
+      // iframe 存在，直接发送
       iframe.contentWindow.postMessage({
         type: 'sub-app-message', from: e.data.from, originalFrom: e.data.from,
         content: e.data.content, bridged: true, target: targetName
       }, '*')
+    } else {
+      // iframe 不存在，入队等下次加载时发送
+      const queue = (window as any).__mfeQueue
+      if (queue) {
+        queue.enqueueMsg(targetName, e.data.originalFrom || e.data.from, e.data.content)
+        addLog('self', '系统', '消息已缓存，待 ' + targetName + ' 加载后送达')
+      }
     }
   }
 }
@@ -99,6 +107,26 @@ const handleMessage = (e: MessageEvent) => {
 function onWujieLoad() {
   loading.value = false
   addLog('self', '系统', props.subApp + ' 子应用已加载')
+
+  // 检查并发送队列中的消息
+  const queue = (window as any).__mfeQueue
+  if (queue) {
+    const msgs = queue.dequeueMsgs(props.subApp)
+    if (msgs.length > 0) {
+      setTimeout(() => {
+        const iframe = findSubAppIframe()
+        if (iframe?.contentWindow) {
+          msgs.forEach((msg: any) => {
+            iframe.contentWindow.postMessage({
+              type: 'sub-app-message', from: msg.from, originalFrom: msg.from,
+              content: msg.content, bridged: true, target: props.subApp
+            }, '*')
+          })
+          addLog('child', '系统', '已送达 ' + msgs.length + ' 条缓存消息')
+        }
+      }, 800) // 等 iframe 完全初始化
+    }
+  }
 }
 
 function onWujieError(e: any) {

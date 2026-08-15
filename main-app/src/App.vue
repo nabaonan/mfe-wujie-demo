@@ -7,6 +7,27 @@ const messages = ref<Array<{from: string; content: string; time: string}>>([
   { from: '系统', content: '微前端应用已启动，欢迎使用！', time: new Date().toLocaleTimeString() }
 ])
 
+// 全局消息队列 — 当目标子应用 iframe 不在视图中时缓存消息
+const pendingQueue = ref<Record<string, Array<{from: string; content: string}>>>({
+  'react-next': [],
+  'vue3': [],
+  'react-spa': []
+})
+
+function enqueueMsg(target: string, from: string, content: string) {
+  if (pendingQueue.value[target]) {
+    pendingQueue.value[target].push({ from, content })
+  }
+}
+
+function dequeueMsgs(target: string): Array<{from: string; content: string}> {
+  if (!pendingQueue.value[target]) return []
+  return pendingQueue.value[target].splice(0)
+}
+
+// 挂到 window 上供 SubAppContainer 访问
+;(window as any).__mfeQueue = { enqueueMsg, dequeueMsgs }
+
 function addMessage(from: string, content: string) {
   messages.value.push({
     from,
